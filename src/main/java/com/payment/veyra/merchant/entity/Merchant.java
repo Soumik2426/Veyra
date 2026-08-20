@@ -3,11 +3,18 @@ package com.payment.veyra.merchant.entity;
 import com.payment.veyra.common.enums.BusinessType;
 import com.payment.veyra.common.enums.MerchantStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "merchant")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Merchant {
 
     @Id

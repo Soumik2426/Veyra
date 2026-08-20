@@ -2,12 +2,18 @@ package com.payment.veyra.merchant.entity;
 
 import com.payment.veyra.common.enums.Environment;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "api_Key")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class ApiKey {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
