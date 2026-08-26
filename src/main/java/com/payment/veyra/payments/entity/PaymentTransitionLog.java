@@ -4,12 +4,18 @@ import com.payment.veyra.common.enums.PaymentActor;
 import com.payment.veyra.common.enums.PaymentEvent;
 import com.payment.veyra.common.enums.PaymentStatus;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "payment_transition_log")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PaymentTransitionLog {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

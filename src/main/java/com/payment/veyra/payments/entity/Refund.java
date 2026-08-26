@@ -3,6 +3,7 @@ package com.payment.veyra.payments.entity;
 import com.payment.veyra.common.entity.Money;
 import com.payment.veyra.common.enums.RefundStatus;
 import jakarta.persistence.*;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -12,6 +13,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "refund")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Refund {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

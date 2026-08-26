@@ -10,14 +10,15 @@ import com.payment.veyra.merchant.entity.Merchant;
 import com.payment.veyra.merchant.repository.AppUserRepository;
 import com.payment.veyra.merchant.repository.MerchantRepository;
 import com.payment.veyra.merchant.service.AuthService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
     private final AppUserRepository appUserRepository;
     private final MerchantRepository merchantRepository;
