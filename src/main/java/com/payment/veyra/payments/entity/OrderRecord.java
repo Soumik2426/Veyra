@@ -1,5 +1,6 @@
 package com.payment.veyra.payments.entity;
 
+import com.payment.veyra.common.entity.BaseEntity;
 import com.payment.veyra.common.entity.Money;
 import com.payment.veyra.common.enums.OrderStatus;
 import jakarta.persistence.*;
@@ -12,13 +13,18 @@ import java.util.Map;
 import java.util.UUID;
 
 @Entity
-@Table(name = "order_record")
+@Table(name = "order_record",
+        indexes = {
+            @Index(name = "idx_order_id_merchant_id", columnList = "id, merchantId"),
+            @Index(name = "idx_merchant_id", columnList = "merchantId")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderRecord {
+public class OrderRecord extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

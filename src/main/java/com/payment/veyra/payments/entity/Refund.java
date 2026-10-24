@@ -1,5 +1,6 @@
 package com.payment.veyra.payments.entity;
 
+import com.payment.veyra.common.entity.BaseEntity;
 import com.payment.veyra.common.entity.Money;
 import com.payment.veyra.common.enums.RefundStatus;
 import jakarta.persistence.*;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Refund {
+public class Refund extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

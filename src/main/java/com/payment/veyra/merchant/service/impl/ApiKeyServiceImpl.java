@@ -2,6 +2,7 @@ package com.payment.veyra.merchant.service.impl;
 
 import com.payment.veyra.common.exceptions.ResourceNotFoundException;
 import com.payment.veyra.common.util.RandomizerUtil;
+import com.payment.veyra.mapper.ApiKeyMapper;
 import com.payment.veyra.merchant.dto.request.CreateApiKeyRequest;
 import com.payment.veyra.merchant.dto.response.ApiKeyCreateResponse;
 import com.payment.veyra.merchant.dto.response.ApiKeyResponse;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ import java.util.UUID;
 public class ApiKeyServiceImpl implements ApiKeyService {
     private final MerchantRepository merchantRepository;
     private final ApiKeyRepository apiKeyRepository;
+    private final ApiKeyMapper apiKeyMapper;
 
 
     @Override
@@ -55,15 +58,10 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     }
 
     @Override
-    public List<ApiKeyResponse> list(UUID merchantId) {
+    public List<ApiKeyResponse> listAllKeys(UUID merchantId) {
         return apiKeyRepository.findByMerchant_Id(merchantId).stream()
-                .map(apiKey ->
-                        new ApiKeyResponse(apiKey.getId(),
-                                apiKey.getKeyId(),
-                                apiKey.getEnvironment(),
-                                apiKey.isEnabled(),
-                                apiKey.getLastUsedAt(),null))
-                .toList();
+                .map(apiKey -> apiKeyMapper.toApiKeyResponse(apiKey))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -83,6 +81,11 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         ApiKey apiKey = apiKeyRepository.findById(apiKeyId)
                 .filter(k -> k.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("apiKey", apiKeyId));
+
+
+        if(!apiKey.isEnabled()){
+            throw new RuntimeException("Cannot rotate a disabled API key");
+        }
 
         String newRawSecret = RandomizerUtil.randomBase64(40);
 

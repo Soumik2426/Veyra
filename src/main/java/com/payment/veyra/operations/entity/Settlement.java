@@ -1,5 +1,6 @@
 package com.payment.veyra.operations.entity;
 
+import com.payment.veyra.common.entity.BaseEntity;
 import com.payment.veyra.common.entity.Money;
 import com.payment.veyra.common.enums.SettlementStatus;
 import jakarta.persistence.*;
@@ -9,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "settlement")
-public class Settlement {
+public class Settlement extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

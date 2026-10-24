@@ -31,9 +31,9 @@ public class ApiKeyController {
 
     //To list all API keys for a merchant
     @GetMapping
-    public ResponseEntity<List<ApiKeyResponse>> list(@PathVariable UUID merchantId){
+    public ResponseEntity<List<ApiKeyResponse>> listAllKeys(@PathVariable UUID merchantId){
         return ResponseEntity.status(HttpStatus.OK)
-                .body(apiKeyService.list(merchantId));
+                .body(apiKeyService.listAllKeys(merchantId));
     }
 
     //To revoke an API key for a merchant

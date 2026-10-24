@@ -1,5 +1,6 @@
 package com.payment.veyra.operations.entity;
 
+import com.payment.veyra.common.entity.BaseEntity;
 import jakarta.persistence.*;
 
 @Entity

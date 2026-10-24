@@ -10,7 +10,7 @@ import java.util.UUID;
 public interface ApiKeyService {
     ApiKeyCreateResponse generate(UUID merchantId, CreateApiKeyRequest request);
 
-    List<ApiKeyResponse> list(UUID merchantId);
+    List<ApiKeyResponse> listAllKeys(UUID merchantId);
 
     void revoke(UUID merchantId, UUID apiKeyId);
 

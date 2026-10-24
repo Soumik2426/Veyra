@@ -1,5 +1,6 @@
 package com.payment.veyra.merchant.entity;
 
+import com.payment.veyra.common.entity.BaseEntity;
 import com.payment.veyra.common.enums.Environment;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,13 +9,17 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "api_Key")
+@Table(name = "api_Key",
+        indexes = {
+            @Index(name="idx_api_key_merchant_id", columnList = "merchant_id, environment, enabled")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ApiKey {
+public class ApiKey extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

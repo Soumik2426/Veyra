@@ -3,6 +3,7 @@ package com.payment.veyra.merchant.service.impl;
 import com.payment.veyra.common.enums.MerchantStatus;
 import com.payment.veyra.common.enums.UserRole;
 import com.payment.veyra.common.exceptions.DuplicateResourceException;
+import com.payment.veyra.mapper.MerchantMapper;
 import com.payment.veyra.merchant.dto.request.MerchantSignupRequest;
 import com.payment.veyra.merchant.dto.response.MerchantResponse;
 import com.payment.veyra.merchant.entity.AppUser;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
     private final AppUserRepository appUserRepository;
     private final MerchantRepository merchantRepository;
+    private final MerchantMapper merchantMapper;
 
     @Override
     @Transactional
@@ -31,14 +33,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         //Creating the Merchant
-        Merchant merchant = Merchant.builder()
-                .businessName(request.businessName())
-                .name(request.name())
-                .email(request.email())
-                .businessType(request.businessType())
-                .status(MerchantStatus.PENDING_KYC)
-                .build();
-        merchantRepository.save(merchant);
+        Merchant merchant = merchantMapper.toMerchantEntity(request);
+        merchant.setStatus(MerchantStatus.PENDING_KYC);
+        merchant=merchantRepository.save(merchant);
 
         //Creating the first AppUser(as soon as a merchant is created, an app user has to be created for the merchant)
         AppUser appUser = AppUser.builder()
@@ -48,13 +45,6 @@ public class AuthServiceImpl implements AuthService {
                 .role(UserRole.OWNER)
                 .build();
         appUserRepository.save(appUser);
-        return new MerchantResponse(
-                merchant.getId(),
-                merchant.getName(),
-                merchant.getEmail(),
-                merchant.getBusinessName(),
-                merchant.getBusinessType(),
-                merchant.getStatus()
-        );
+        return merchantMapper.toResponse(merchant);
     }
 }
