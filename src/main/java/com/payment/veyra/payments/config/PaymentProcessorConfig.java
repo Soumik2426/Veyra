@@ -14,7 +14,7 @@ import java.util.Map;
 @Configuration
 public class PaymentProcessorConfig {
     @Bean
-    public Map<PaymentMethod, PaymentProcessor> paymentAdapterMap(){
+    public Map<PaymentMethod, PaymentProcessor> paymentProcessorAdapterMap(){
         return Map.of(
                 PaymentMethod.CARD, new CardPaymentProcessor(),
                 PaymentMethod.NETBANKING, new NetBankingPaymentProcessor(),
@@ -22,5 +22,4 @@ public class PaymentProcessorConfig {
                 PaymentMethod.WALLET, new WalletPaymentProcessor()
         );
     }
-
 }

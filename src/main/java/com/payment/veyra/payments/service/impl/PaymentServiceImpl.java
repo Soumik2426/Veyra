@@ -76,6 +76,9 @@ public class PaymentServiceImpl implements PaymentService {
             paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_FAILURE);
             payment.setErrorCode(failure.errorCode());
             payment.setErrorDescription(failure.errorDescription());
+        }else if(result instanceof PaymentResult.Success success){
+            log.warn("Invalid State");
+            return null;
         }
         payment=paymentRepository.save(payment);
         orderRepository.save(order);
