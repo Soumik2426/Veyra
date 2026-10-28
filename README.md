@@ -38,7 +38,7 @@ The lifecycle diagram captures the payment states the domain is intended to repr
 
 This is a broader target schema covering merchant accounts, orders, payments, tokenized cards, refunds, webhooks, settlements, dead-letter records, and transition logs. Some of these entities exist in the code, while others are future design scope; the diagram should not be read as a guarantee that the current database matches every field or relationship shown.
 
-![Target data model](docs/images/target-data-model.png)
+![Target data model](docs/images/Razorpay_ER_Diagram_204b89e2c0.webp)
 
 ## Implemented foundation
 
