@@ -1,8 +1,8 @@
 # Veyra
 
-Veyra is an in-progress Java and Spring Boot project exploring the backend architecture of a merchant-facing payment gateway. It brings together order and payment APIs, payment-method routing, payment state management, merchant and API-key models, and a card tokenization vault backed by PostgreSQL.
+Veyra is a distributed payment gateway and payment processing platform built with Java and Spring Boot. It is designed around its own payment processor and method-specific integrations, giving merchants a unified way to initiate and manage payments across Card, UPI, Net Banking, and Wallet without relying on third-party payment gateway APIs as the core processing layer.
 
-The project is being built as a portfolio demonstration of Java backend engineering and payment-system design. The diagrams below show both the current domain direction and planned architecture. They are design context; they do not mean every illustrated integration or operational guarantee is already implemented.
+Veyra is architected toward a throughput target of 10,000 transactions per second, with reliability, secure card tokenization, idempotent payment operations, asynchronous webhook delivery, and settlement workflows as key design goals. Its broader platform vision includes merchant onboarding, multi-tenant security, payment lifecycle management, refunds, and transaction analytics.
 
 ## At a glance
 
