@@ -20,19 +20,19 @@ The diagrams provide context for the payment flows and data model Veyra is being
 
 This diagram shows the intended responsibilities across the cardholder, vault, gateway, processor, card network, and acquiring bank. Veyra currently contains the vault and routing building blocks, but does not connect to those external networks or implement the complete illustrated flow.
 
-![Card payment flow design](docs/images/card-payment-flow.png)
+![Card payment flow design](docs/images/Card_Payment.png)
 
 ### Example Net Banking flow
 
 This sequence shows how a customer may leave the merchant checkout to authenticate with their bank, then return through a bank callback or status check. It is a design illustration; the current repository does not include a live bank redirect or callback integration.
 
-![Net Banking payment flow design](docs/images/netbanking-flow.png)
+![Net Banking payment flow design](docs/images/Net_Banking.png)
 
 ### Payment lifecycle
 
 The lifecycle diagram captures the payment states the domain is intended to represent, including authorization, capture, settlement, cancellation, and refunds. The code currently has an explicit transition table and transition log, though not every lifecycle operation shown here is wired to an API or processor.
 
-![Payment object lifecycle design](docs/images/payment-lifecycle.png)
+![Payment object lifecycle design](docs/images/Payment_Object_LifeCycle.png)
 
 ### Target data model
 
@@ -97,7 +97,7 @@ Payment state changes such as `payment.captured`, `payment.failed`, and `refund.
 
 The worker must claim due jobs safely so multiple instances do not send the same scheduled attempt concurrently. Delivery state and retry history should remain observable and recoverable; Redis is planned for due-time scheduling, while durable event state and replay controls need a persistent source of truth.
 
-![Planned webhook delivery, retry, and dead-letter flow](docs/images/webhook-delivery-flow.png)
+![Planned webhook delivery, retry, and dead-letter flow](docs/images/Webhook_Mechanism.png)
 
 ### Idempotency and Redis
 
