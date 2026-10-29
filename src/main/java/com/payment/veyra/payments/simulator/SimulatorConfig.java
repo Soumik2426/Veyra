@@ -1,6 +1,9 @@
 package com.payment.veyra.payments.simulator;
 
 import com.payment.veyra.common.enums.ChaosMode;
+import com.payment.veyra.common.enums.PaymentMethod;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,13 +12,19 @@ import java.util.Map;
 
 @Configuration
 @ConfigurationProperties(prefix = "payment.simulator")
+@Getter
+@Setter
 public class SimulatorConfig {
     private Integer pollIntervalMs=2000;
     private ChaosMode chaosMode=ChaosMode.NORMAL;
-
     private Map<String, MethodSimulatorConfig> methods=new HashMap<>();
 
+    public SimulatorConfig.MethodSimulatorConfig configFor(PaymentMethod method){
+        return methods.getOrDefault(method.name(), new MethodSimulatorConfig());
+    }
 
+    @Getter
+    @Setter
     public static class MethodSimulatorConfig{
         private Integer minDelaySeconds=1;
         private Integer maxDelaySeconds=5;

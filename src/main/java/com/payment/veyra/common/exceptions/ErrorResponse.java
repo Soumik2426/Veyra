@@ -10,7 +10,7 @@ public record ErrorResponse (
     String errorCode,
     String errorDescription,
     LocalDateTime timestamp,
-    List<String> fieldErrors
+    List<FieldError> fieldErrors
 ){
     public record FieldError(String field, String message){}
 
@@ -18,7 +18,7 @@ public record ErrorResponse (
         return new ErrorResponse(errorCode, errorDescription, LocalDateTime.now(), null);
     }
 
-    public static ErrorResponse of(String errorCode, String errorDescription, List<String> fieldErrors){
+    public static ErrorResponse of(String errorCode, String errorDescription, List<FieldError> fieldErrors){
         return new ErrorResponse(errorCode, errorDescription, LocalDateTime.now(), fieldErrors);
     }
 }

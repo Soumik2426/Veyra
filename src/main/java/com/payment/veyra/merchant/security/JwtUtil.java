@@ -1,0 +1,48 @@
+package com.payment.veyra.merchant.security;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.sql.Date;
+import java.time.Instant;
+import java.util.UUID;
+
+@Component
+public class JwtUtil {
+    @Value("${jwt.secret-key}")
+    private String secretKey;
+
+
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    }
+
+    //To create a JWT token
+    public String generateAccessToken(String email, UUID merchantId, String role){
+        Instant now = Instant.now();
+
+        return Jwts.builder()
+                .subject(email)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(60*100)))
+                .claim("merchant_id", merchantId)
+                .claim("role", role)
+                .signWith(getSecretKey())
+                .compact();
+    }
+
+    //To verify a JWT token
+    public Claims verifyAccessToken(String token){
+        return Jwts.parser()
+                .verifyWith(getSecretKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+}

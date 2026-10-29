@@ -54,6 +54,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .order(order)
                 .merchantId(merchantId)
                 .amount(order.getAmount())
+                .idempotencyKey(UUID.randomUUID().toString())
                 .status(PaymentStatus.CREATED)
                 .paymentMethod(request.method())
                 .methodDetails(request.methodDetails())
@@ -67,6 +68,7 @@ public class PaymentServiceImpl implements PaymentService {
                                                         request.methodDetails()
                                                         );
 
+        paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_ATTEMPT);
         PaymentResult result=paymentGatewayRouter.initiate(paymentRequest);
 
         if(result instanceof PaymentResult.Pending pending){
@@ -109,5 +111,52 @@ public class PaymentServiceImpl implements PaymentService {
         payment=paymentRepository.save(payment);
         //TODO: Publish Kafka event for payment capture
         return paymentMapper.toResponse(payment);
+    }
+
+    @Override
+    @Transactional
+    public void resolveAuthorization(UUID id, boolean approve, String bankRef, String errorCode, String errorDescription) {
+        Payment payment=paymentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Payment", id));
+
+        if(payment.getStatus()!=PaymentStatus.AUTHORIZING){
+            log.warn("Payment Status is not in Authorizing state, paymentId: {}, status: {}", id, payment.getStatus());
+            return;
+        }
+
+        OrderRecord order=payment.getOrder();
+
+        if(approve){
+            paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_SUCCESS);
+            payment.setBankReference(bankRef);
+            payment.setAuthorizedAt(LocalDateTime.now());
+
+            //Auto Capture after authorization
+            paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_REQUEST);
+            PaymentResult result=paymentGatewayRouter.capture(payment.getPaymentMethod(), payment.getId());
+            if(result instanceof PaymentResult.Success success){
+                paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_SUCCESS);
+                payment.setCapturedAt(LocalDateTime.now());
+                order.setOrderStatus(OrderStatus.PAID);
+                log.info("Payment captured successful for paymentId: {}", payment.getId());
+            }else if(result instanceof PaymentResult.Failure failure){
+                paymentTransitionService.apply(payment, PaymentEvent.CAPTURE_FAILURE);
+                payment.setErrorCode(failure.errorCode());
+                payment.setErrorDescription(failure.errorDescription());
+                log.warn("Payment captured failure for paymentId: {}", payment.getId());
+            }
+
+        }else{
+            paymentTransitionService.apply(payment, PaymentEvent.AUTHORIZE_FAILURE);
+            payment.setErrorCode(errorCode);
+            payment.setErrorDescription(errorDescription);
+            log.warn("Payment authorization failed for paymentId: {}, errorCode: {}, errorDescription: {}", payment.getId(), errorCode, errorDescription);
+        }
+
+
+        paymentRepository.save(payment);
+        orderRepository.save(order);
+
+        //TODO: Send an outbox(kafka event)
     }
 }

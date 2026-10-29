@@ -1,6 +1,8 @@
 package com.payment.veyra.merchant.controller;
 
+import com.payment.veyra.merchant.dto.request.MerchantLoginRequest;
 import com.payment.veyra.merchant.dto.request.MerchantSignupRequest;
+import com.payment.veyra.merchant.dto.response.MerchantLoginResponse;
 import com.payment.veyra.merchant.dto.response.MerchantResponse;
 import com.payment.veyra.merchant.service.AuthService;
 import jakarta.validation.Valid;
@@ -23,6 +25,13 @@ public class AuthController {
     public ResponseEntity<MerchantResponse> signup(@RequestBody @Valid MerchantSignupRequest request){
         return ResponseEntity.status(HttpStatus.CREATED).body(
             authService.signup(request)
+        );
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<MerchantLoginResponse> login(@RequestBody @Valid MerchantLoginRequest request){
+        return ResponseEntity.status(HttpStatus.OK).body(
+                authService.login(request)
         );
     }
 

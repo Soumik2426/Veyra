@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class PaymentController {
     private final PaymentService paymentService;
-    UUID merchantId = UUID.fromString("a208ab14-2e5d-41ce-aadf-76847e36cbea"); //TODO: replace it with merchantContext
+    UUID merchantId = UUID.fromString("79c07ff4-7f6a-45ec-a00d-581f26f6597d"); //TODO: replace it with merchantContext
 
 
     @PostMapping("/initiate")
