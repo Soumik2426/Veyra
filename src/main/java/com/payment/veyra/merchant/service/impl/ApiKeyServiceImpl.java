@@ -13,6 +13,7 @@ import com.payment.veyra.merchant.repository.MerchantRepository;
 import com.payment.veyra.merchant.service.ApiKeyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,11 +30,12 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final MerchantRepository merchantRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final ApiKeyMapper apiKeyMapper;
+    private final BCryptPasswordEncoder BCRYPT = new BCryptPasswordEncoder();
 
 
     @Override
     @Transactional
-    public ApiKeyCreateResponse generate(UUID merchantId, CreateApiKeyRequest request) {
+    public ApiKeyCreateResponse createApiKey(UUID merchantId, CreateApiKeyRequest request) {
         Merchant merchant = merchantRepository.findById(merchantId)
                 .orElseThrow(()-> new ResourceNotFoundException("merchant", merchantId));
 
@@ -43,7 +45,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         ApiKey apiKey = ApiKey.builder()
                 .merchant(merchant)
                 .keyId(keyId)
-                .keySecretHash(keySecretHash) //TODO: encode with BcryptPasswordEncoder
+                .keySecretHash(BCRYPT.encode(keySecretHash))
                 .environment(request.environment())
                 .build();
 
@@ -90,7 +92,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         String newRawSecret = RandomizerUtil.randomBase64(40);
 
         apiKey.setPreviousKeySecretHash(apiKey.getKeySecretHash());
-        apiKey.setKeySecretHash(newRawSecret); //TODO: encode with BcryptPassword
+        apiKey.setKeySecretHash(BCRYPT.encode(newRawSecret));
         apiKey.setRotatedAt(LocalDateTime.now());
         apiKey.setGracePeriodExpiryAt(LocalDateTime.now().plusHours(24));
 

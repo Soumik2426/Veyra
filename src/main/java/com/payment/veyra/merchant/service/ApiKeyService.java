@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ApiKeyService {
-    ApiKeyCreateResponse generate(UUID merchantId, CreateApiKeyRequest request);
+    ApiKeyCreateResponse createApiKey(UUID merchantId, CreateApiKeyRequest request);
 
     List<ApiKeyResponse> listAllKeys(UUID merchantId);
 

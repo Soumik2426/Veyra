@@ -2,6 +2,7 @@ package com.payment.veyra.payments.service.impl;
 
 import com.payment.veyra.common.enums.OrderStatus;
 import com.payment.veyra.common.exceptions.BusinessRuleViolationException;
+import com.payment.veyra.common.exceptions.DuplicateResourceException;
 import com.payment.veyra.common.exceptions.ResourceNotFoundException;
 import com.payment.veyra.mapper.OrderMapper;
 import com.payment.veyra.mapper.PaymentMapper;
@@ -42,7 +43,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderResponse createOrder(UUID merchantId, CreateOrderRequest request) {
         if(request.receipt() != null && orderRepository.existsByMerchantIdAndReceipt(merchantId, request.receipt())){
-            throw new ResourceNotFoundException("ORDER_RECEIPT_EXISTS", "order with receipt already exists: "+request.receipt());
+            throw new DuplicateResourceException("ORDER_RECEIPT_EXISTS", "order with receipt already exists: "+request.receipt());
         }
 
         OrderRecord newOrder = OrderRecord.builder()

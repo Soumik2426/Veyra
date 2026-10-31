@@ -1,5 +1,6 @@
 package com.payment.veyra.payments.controller;
 
+import com.payment.veyra.merchant.security.MerchantContext;
 import com.payment.veyra.payments.dto.request.CreateOrderRequest;
 import com.payment.veyra.payments.dto.response.OrderResponse;
 import com.payment.veyra.payments.service.OrderService;
@@ -20,13 +21,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderController {
 
+    private final MerchantContext merchantContext;
     private final OrderService orderService;
-    UUID merchantId = UUID.fromString("79c07ff4-7f6a-45ec-a00d-581f26f6597d"); //TODO: replace it with merchantContext
 
 
     @PostMapping
     public ResponseEntity<OrderResponse> createOrder(@RequestBody @Valid CreateOrderRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(orderService.createOrder(merchantId, request));
+                .body(orderService.createOrder(merchantContext.getMerchantId(), request));
     }
 }

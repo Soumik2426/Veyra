@@ -69,7 +69,7 @@ public class CardTokenServiceImpl implements CardTokenService {
         CardToken cardToken=CardToken.builder()
                 .token(token)
                 .vaultCard(vaultCard)
-                .customer(request.customerId())
+                .customer(UUID.randomUUID())
                 .merchant(merchantId)
                 .build();
 
